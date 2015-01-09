@@ -8,12 +8,8 @@
 #define TASK_LED ledYellow
 
 #define RTC_ADDR 0x68
-//#define RTC_ADDR 0xD0
-//#define DS3231_ADDR_R	0xD1
-//#define DS3231_ADDR_W	0xD0
-//#define UTC_OFFSET 3
 
-int8_t utcOffset; // = UTC_OFFSET;
+int8_t utcOffset;
 
 typedef enum
 {
@@ -47,7 +43,6 @@ void I2CInit()
 	I2Cdrv->Initialize(NULL);
 	I2Cdrv->PowerControl(ARM_POWER_FULL);
 	I2Cdrv->Control(ARM_I2C_BUS_SPEED, ARM_I2C_BUS_SPEED_FAST);
-	//I2Cdrv->Control(ARM_I2C_BUS_SPEED, ARM_I2C_BUS_SPEED_STANDARD);
 	I2Cdrv->Control(ARM_I2C_BUS_CLEAR, 0);
 	
 	osMutexRelease(mutexI2C0);

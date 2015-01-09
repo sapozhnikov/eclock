@@ -94,10 +94,10 @@ void display_task (void const *arg)
 
 	//code B for digits 0-3
 	setRegister(REG_DECODE_MODE, BIT_0 | BIT_1 | BIT_2 | BIT_3);
-	setRegister(REG_INTENSITY, 0x06);
+	setRegister(REG_INTENSITY, 0x03);
 	setRegister(REG_SCAN_LIMIT, 0x04); //4 digits and colon
 	setRegister(REG_SHUTDOWN, BIT_0); //normal operation
-	setRegister(REG_DISPLAT_TEST, 0); //normal operation
+	setRegister(REG_DISPLAY_TEST, 0); //normal operation
 	
 	setRegister(REG_NOOP, 0);
 	ledSetState(TASK_LED, LedOff);

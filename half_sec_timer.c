@@ -6,6 +6,7 @@
 
 #define NTP_FIRST_DELAY (2 * 10) // 10 sec
 #define NTP_REQ_PERIOD (2 * 60 * 60 * 25) //25 hours
+#define NTP_REREQ_DELAY (2 * 60 * 30) //30 min
 
 //extern osThreadId ledsThreadId;
 extern osThreadId netThreadId;
@@ -33,4 +34,9 @@ void halfSecTimerCB  (void const *arg)
 	readRtcTime();
 	osSignalSet (displayThreadId, FLAG_INVERSE_COLON);
 	ledsPeriodicBlink();
+}
+void scheldueNTPRequest(void)
+{
+	//pause after failed NTP request
+	counterNtp = NTP_REQ_PERIOD - NTP_REREQ_DELAY;
 }

@@ -3,7 +3,6 @@
 #include "cmsis_os.h"
 #include "rl_net.h"
 #include "net_task.h"
-//#include "leds_task.h"
 #include "display_task.h"
 #include "leds_control.h"
 #include "half_sec_timer.h"
@@ -14,12 +13,10 @@
 
 osThreadDef (net_task, osPriorityNormal, 1, 400);
 osThreadDef (display_task, osPriorityNormal, 1, 0);
-//osThreadDef (leds_task, osPriorityNormal, 1, 0);
 osTimerDef (halfSecTimer, halfSecTimerCB);
 osMutexDef (MutexI2C);
 osMutexDef (MutexRTCtime);
 
-//osThreadId ledsThreadId;
 osThreadId netThreadId;
 osThreadId displayThreadId;
 
@@ -28,7 +25,6 @@ osMutexId mutexI2C0,
 
 int main(void)
 {
-	//volatile osThreadId id;
 	//timer def
 	osTimerId timerId;
 	osStatus  status;
@@ -36,6 +32,9 @@ int main(void)
 	SystemCoreClockUpdate ();                 /* Update system core clock       */  
 	SystemInit();
 	SysTick_Config(SystemCoreClock / 1000);
+	
+	//giving time for network hardware or we'll can't reach DHCP server
+	osDelay(1000);
 	net_initialize();
 	
 	ledInit();
@@ -61,22 +60,16 @@ int main(void)
   timerId = osTimerCreate (osTimer(halfSecTimer), osTimerPeriodic, NULL);
   if (timerId != NULL)
 	{
-    // Periodic timer created
+		// Periodic timer created
 		status = osTimerStart (timerId, 500); // start timer
 		if (status != osOK)
 		{
-      // Timer could not be started
+			// Timer could not be started
 			ledSetState(TASK_LED, LedBlink);
-    } 
-  }
+		} 
+	}
 	else
 		ledSetState(TASK_LED, LedBlink);
-
-//	ledsThreadId = osThreadCreate (osThread (leds_task), NULL);
-//	if (ledsThreadId == NULL)
-//	{
-//		//set err state
-//	}
 
 	netThreadId = osThreadCreate (osThread (net_task), NULL);
 	if (netThreadId == NULL)
@@ -96,6 +89,6 @@ int main(void)
 	{
 		net_main();
 		checkButtonsState();
-    osThreadYield (); //task switch
+		osThreadYield (); //task switch
 	}
 }

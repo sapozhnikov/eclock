@@ -1,4 +1,3 @@
-//#include <stdio.h>
 #include <stdbool.h>
 #include <time.h>
 #include "cmsis_os.h"
@@ -7,6 +6,7 @@
 #include "net_task.h"
 #include "leds_control.h"
 #include "rtc_control.h"
+#include "half_sec_timer.h"
 #include "bits.h"
 
 extern time_t ntpEpochTime;
@@ -26,8 +26,6 @@ netTaskErr getEpochTime (void);
 void updateRtcTime(void);
 
 uint8_t ntpHostIP[4];
-//volatile static uint32_t epochTime; //UNIX time from internet
-//volatile static uint8_t hours, mins;
 
 extern LOCALM localm[];
 osThreadId netTaskId; // ID of Net Thread
@@ -81,7 +79,11 @@ void net_task (void const *arg)
 		if (ntpSuccess == true)
 			ledSetState(TASK_LED, LedOff);
 		else
+		{
 			ledSetState(TASK_LED, LedBlink);
+			//rerequest NTP time after delay
+			scheldueNTPRequest();
+		}
 	}
 }
 
@@ -161,16 +163,6 @@ static void sntpCBack (uint32_t time)
 {
 	ntpEpochTime = time;
 	osSignalSet (netTaskId, FLAG_UDP_PACKET_RECV);
-	
-//  if (time == 0) {
-//  }
-//  else {
-//		epochTime = time;
-//		epochTime %= 86400;
-//		hours = epochTime / 3600;
-//		epochTime %= 3600;
-//		mins = epochTime / 60;
-//  }
 }
 
 // This function is called by the DNS client when dns event occurs.

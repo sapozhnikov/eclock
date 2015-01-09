@@ -11,7 +11,7 @@
 #define REG_INTENSITY			0x0A
 #define REG_SCAN_LIMIT		0x0B
 #define REG_SHUTDOWN			0x0C
-#define REG_DISPLAT_TEST	0x0F
+#define REG_DISPLAY_TEST	0x0F
 
 #define CHAR_0				0
 #define CHAR_1				BIT_0

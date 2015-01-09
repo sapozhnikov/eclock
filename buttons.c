@@ -78,7 +78,6 @@ void button2PressEvent()
 
 void saveUtcOffsetToFlash()
 {
-	//volatile uint32_t result;
 	flashImage[0] = utcOffset;
 
 	__disable_irq();
